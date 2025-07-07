@@ -45,6 +45,12 @@ foreach ($personnages as $perso) {
 }
 echo "</ul>";
 
+
+// $sqlPersonnage = "SELECT * FROM `personnage`";
+// $reqPersonnage = $pdo->prepare($sqlPersonnage);
+// $reqPersonnage->execute();
+// $personnages = $reqPersonnage->fetchAll(PDO::FETCH_ASSOC);      
+
 // foreach ($personnages as $perso) {
 //     echo "<li>";
 //     foreach ($perso as $key => $value) {
@@ -52,7 +58,6 @@ echo "</ul>";
 //     }
 //     echo "</li><br>";
 // }
-
 
 // . Affichage des armes
 echo "<h2>Liste des armes</h2>";
