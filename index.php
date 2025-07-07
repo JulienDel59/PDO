@@ -45,6 +45,15 @@ foreach ($personnages as $perso) {
 }
 echo "</ul>";
 
+// foreach ($personnages as $perso) {
+//     echo "<li>";
+//     foreach ($perso as $key => $value) {
+//         echo "$key : $value<br>";
+//     }
+//     echo "</li><br>";
+// }
+
+
 // . Affichage des armes
 echo "<h2>Liste des armes</h2>";
 echo "<ul>";
