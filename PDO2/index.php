@@ -23,8 +23,12 @@ try {
 </head>
 <body>
     <form method="POST">
+
         <input type="text" name="colorName">
-        <input type="submit" name="sumbmitColor" value="Couleur pour la BDD">
+        <input type="submit" name="submitColor" value="Couleur pour la BDD">
+        <br>
+        <input type="text" name="typeName">
+        <input type="submit" name="submitType" value="Type pour la BDD">
 
     </form>
 </body>
@@ -32,13 +36,23 @@ try {
 
 <?php
 
-    if(isset($_POST['sumbmitColor'])){
+    if(isset($_POST['submitColor'])){
 
         $color = $_POST['colorName'];
         $sql = "INSERT INTO `couleur_`( `nomCouleur`) VALUES ('$color')";
         $stmt = $pdo->prepare($sql);
         $stmt->execute();
     
-    echo "data envoyées en bdd";
+    echo "data couleur envoyées en bdd";
+    }
+
+    if (isset($_POST['submitType'])){
+
+        $type = $_POST['typeName'];
+        $sql = "INSERT INTO `type_vehicule`( `nomType`) VALUES ('$type')";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+
+    echo "date type vehicule envoyées en bdd";
     }
 ?>
