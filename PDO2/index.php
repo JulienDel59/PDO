@@ -12,6 +12,15 @@ try {
 } catch (PDOException $e) {
     echo "Erreur de connexion : " . $e->getMessage();
 }
+
+$sqlAll = "SELECT * FROM vehicule";
+$stmtAll =$pdo->prepare($sqlAll);
+$stmtAll ->execute();
+
+$resultsAll = $stmtAll->fetchAll(PDO::FETCH_ASSOC);
+
+
+
 $sqlCouleur = "SELECT * FROM `couleur_`";
 $stmtCouleur = $pdo->prepare($sqlCouleur);
 $stmtCouleur->execute();
@@ -62,6 +71,33 @@ $resultsType = $stmtType->fetchAll(PDO::FETCH_ASSOC);
         </select>
         <input type ="submit" name="submitVehicule" value="Ajouter un vehicule">
     </form>
+    
+    <hr>
+   
+     <?php
+
+        foreach ($resultsAll as $key => $value) {
+            $idASupprimer = $value['idVehicule'];
+            echo"<form method='POST'>";
+            echo"<input type='hidden' name='idDelete' value='$idASupprimer'>";
+
+            foreach ($value as $key =>$value2) {
+                echo $key . " : " . $value2 . " - ";
+            }
+            echo '<input type="submit" name="submitDelete" value="Supprimer"><br>';
+            echo "</form>";
+        }
+
+        if(isset($_POST['submitDelete'])){
+            $idToDelete = $_POST['idDelete'];
+            $sqlDelete ="DELETE FROM vehicule WHERE idVehicule = '$idToDelete'";
+            $stmtDelete = $pdo->prepare($sqlDelete);
+            $stmtDelete->execute();
+        }
+
+     ?>
+    
+
 </body>
 </html>
 
@@ -74,7 +110,7 @@ $resultsType = $stmtType->fetchAll(PDO::FETCH_ASSOC);
         echo $color;
         echo $type;
 
-        $sql = "INSERT INTO `vehicule`( `immatriculation_`, `IdType`, `IdCouleur_`) VALUES ('$immatriculation','$type','$color]')";
+        $sql = "INSERT INTO `vehicule`( `immatriculation_`, `IdType`, `IdCouleur_`) VALUES ('$immatriculation','$type','$color')";
         $stmt = $pdo->prepare($sql);
         $stmt->execute();
 
