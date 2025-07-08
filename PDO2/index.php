@@ -12,6 +12,18 @@ try {
 } catch (PDOException $e) {
     echo "Erreur de connexion : " . $e->getMessage();
 }
+$sqlCouleur = "SELECT * FROM `couleur_`";
+$stmtCouleur = $pdo->prepare($sqlCouleur);
+$stmtCouleur->execute();
+
+$resultsCouleur = $stmtCouleur->fetchAll(PDO::FETCH_ASSOC);
+
+$sqlType = "SELECT * FROM `type_vehicule`";
+$stmtType = $pdo->prepare($sqlType);
+$stmtType->execute();
+
+$resultsType = $stmtType->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 
 <!DOCTYPE html>
@@ -31,10 +43,44 @@ try {
         <input type="submit" name="submitType" value="Type pour la BDD">
 
     </form>
+
+    <form method="POST">
+        <input type="text" name="immatriculation">
+        <select name="selectAddCouleur">
+            <?php
+                foreach ($resultsCouleur as $key => $value) {
+                   echo "<option value='" . $value['IdCouleur_'] . "'>". $value['nomCouleur'] ." </option>";
+                }           
+            ?>
+        </select>
+        <select name="selectAddType">
+            <?php
+                foreach ($resultsType as $key => $value) {
+                   echo "<option value='" . $value['IdType'] . "'>". $value['nomType'] ." </option>";
+                }           
+            ?>
+        </select>
+        <input type ="submit" name="submitVehicule" value="Ajouter un vehicule">
+    </form>
 </body>
 </html>
 
 <?php
+    if(isset($_POST['submitVehicule'])){
+        $color = $_POST['selectAddCouleur'];
+        $immatriculation = $_POST['immatriculation'];
+        $type = $_POST['selectAddType'];
+        echo $immatriculation;
+        echo $color;
+        echo $type;
+
+        $sql = "INSERT INTO `vehicule`( `immatriculation_`, `IdType`, `IdCouleur_`) VALUES ('$immatriculation','$type','$color]')";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+
+        echo "data Vehicule envoyées en bdd";
+       
+    }
 
     if(isset($_POST['submitColor'])){
 
