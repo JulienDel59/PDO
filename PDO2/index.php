@@ -97,7 +97,6 @@ $resultsType = $stmtType->fetchAll(PDO::FETCH_ASSOC);
 
      ?>
     
-
 </body>
 </html>
 
@@ -135,6 +134,6 @@ $resultsType = $stmtType->fetchAll(PDO::FETCH_ASSOC);
         $stmt = $pdo->prepare($sql);
         $stmt->execute();
 
-    echo "date type vehicule envoyées en bdd";
+    echo "data type vehicule envoyées en bdd";
     }
 ?>
