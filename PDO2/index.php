@@ -84,6 +84,7 @@ $resultsType = $stmtType->fetchAll(PDO::FETCH_ASSOC);
             foreach ($value as $key =>$value2) {
                 echo $key . " : " . $value2 . " - ";
             }
+            echo '<a href="?id=' . $idASupprimer . '">Modifier</a>';
             echo '<input type="submit" name="submitDelete" value="Supprimer"><br>';
             echo "</form>";
         }
@@ -136,4 +137,50 @@ $resultsType = $stmtType->fetchAll(PDO::FETCH_ASSOC);
 
     echo "data type vehicule envoyées en bdd";
     }
+
 ?>
+
+<hr>
+
+<?php 
+
+    if(isset($_GET["id"])){
+        $id= $_GET['id'];
+        $sqlId = "SELECT * FROM `vehicule`WHERE idVehicule = '$id'";
+
+        $stmtId= $pdo->prepare($sqlId);
+        $stmtId->execute();
+
+        $resultsId = $stmtId->fetchAll(PDO::FETCH_ASSOC);
+        
+        echo '<form method="POST">
+               <input type="text" name="idUpdate" value="' . $resultsId[0]['idVehicule'] . '">
+               <input type="text" name="immatriculationUpdate" value="' . $resultsId[0]['immatriculation_'] . '">
+               <input type="text" name="typeUpdate" value="' . $resultsId[0]['IdType'] . '">
+               <input type="text" name="couleurUpdate" value="' . $resultsId[0]['IdCouleur_'] . '">
+               <input type="submit" name="submitUpdate" value="Metre a jour la BDD">
+              </form>';
+
+              var_dump($resultsId);
+         
+    }
+
+      if (isset($_POST['submitUpdate'])){
+
+        $idUpdate = $_POST['idUpdate'];
+        $immatriculation = $_POST['immatriculationUpdate'];
+        $type = $_POST['typeUpdate'];
+        $couleur = $_POST['couleurUpdate'];
+
+
+        $sqlUpdate = "UPDATE `vehicule` SET `immatriculation_`='  $immatriculation ',`IdType`='$type',`IdCouleur_`='$couleur' WHERE idVehicule='$idUpdate'";
+
+        $stmtUpdate= $pdo->prepare($sqlUpdate);
+        $stmtUpdate->execute();
+      
+      }
+
+
+    ?>
+
+   
