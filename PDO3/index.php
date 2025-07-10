@@ -66,12 +66,12 @@ try {
                 "nom_user" => $results[0]["nom_user"] ,
                 "prenom_user" => $results[0]["prenom_user"] ,
                 "age_user" => $results[0]["age_user"],
-                "adresse_mail_user" => $results[0]["adresse_mail_userF"] ,
+                "adresse_mail_user" => $results[0]["adresse_mail_user"] ,
             ];
                 header("Location: index.php");
         }
         else{
-            echo "utilisateur non connecté - Mot de passe incorrect";
+            echo "Mot de passe incorrect";
         }
     }
     else{
