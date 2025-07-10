@@ -50,10 +50,10 @@ try {
     <?php
 
         if (isset($_POST['submitConnexion'])){
-            $id = $_POST['identifiant'];
+            $mail = $_POST['identifiant'];
             $password = $_POST['password'];
 
-            $sql ="SELECT * FROM `user` WHERE adresse_mail_user = '$id'";
+            $sql ="SELECT * FROM `user` WHERE adresse_mail_user = '$mail'";
             $stmt = $pdo->prepare($sql);
             $stmt->execute();
             $results= $stmt->fetchAll(PDO::FETCH_ASSOC);
