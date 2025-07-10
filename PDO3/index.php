@@ -40,6 +40,8 @@ try {
         <input type="submit" name="deconnexion" value="Se déconnecter">
         </form>';
         echo "Bonjour, " . $_SESSION['user']['nom_user'] . " " . $_SESSION['user']['prenom_user'] . " . Vous êtes connecté . ";
+        // echo '<br><a href="dashboard.php">Accéder au panneau de configuration</a>';
+        include 'dashboard.php';
     }
     ?>
     
