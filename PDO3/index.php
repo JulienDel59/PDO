@@ -1,5 +1,4 @@
 <?php
-// 1. Connexion à la base de données
 session_start();
 $host = 'localhost';
 $dbname = 'sessionlog';
