@@ -51,7 +51,7 @@ if (isset($_POST['modifier'])) {
     <h2>Panneau de configuration</h2>
     <p>Bonjour, <?= htmlspecialchars($_SESSION['user']['prenom_user']) ?> <?= htmlspecialchars($_SESSION['user']['nom_user']) ?>.</p>
 
-    <?php if (isset($message)) echo "$message</p>"; ?>
+    <?php if (isset($message)) echo "<p>$message</p>"; ?>
 
     <form method="POST">
         <label>Nom :</label>
