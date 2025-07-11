@@ -50,23 +50,23 @@ try {
     <?php
 
         if (isset($_POST['submitConnexion'])){
-            $mail = htmlspecialchars($_POST['identifiant']);
-            $password = htmlspecialchars($_POST['password']);
+            $mail = ($_POST['identifiant']);
+            $password = ($_POST['password']);
 
-            $sql ="SELECT * FROM `user` WHERE adresse_mail_user = '$mail'";
+            $sql ="SELECT * FROM `user` WHERE adresse_mail_user = ?";
             $stmt = $pdo->prepare($sql);
-            $stmt->execute();
+            $stmt->execute([$mail]);
             $results= $stmt->fetchAll(PDO::FETCH_ASSOC);
     
 
     if($results){
         if ($password == $results[0]["password_user"]){
             $_SESSION['user'] = [
-                "id_user" => htmlspecialchars($results[0]["id_user"]) ,
-                "nom_user" => htmlspecialchars($results[0]["nom_user"]) ,
-                "prenom_user" => htmlspecialchars($results[0]["prenom_user"]) ,
-                "age_user" => htmlspecialchars($results[0]["age_user"]),
-                "adresse_mail_user" => htmlspecialchars($results[0]["adresse_mail_user"]) ,
+                "id_user" => $results[0]["id_user"] ,
+                "nom_user" => $results[0]["nom_user"] ,
+                "prenom_user" => $results[0]["prenom_user"] ,
+                "age_user" => $results[0]["age_user"],
+                "adresse_mail_user" => $results[0]["adresse_mail_user"] ,
             ];
                 header("Location: index.php");
         }
