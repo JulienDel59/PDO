@@ -24,6 +24,7 @@ try {
     <title>Document</title>
 </head>
 <body>
+    
     <?php
 
     if (!isset($_SESSION['user'])){
@@ -33,7 +34,8 @@ try {
         <label>Password</label>
         <input type="password" name="password">
         <input type="submit" name="submitConnexion" value="Se connecter">
-    </form> ';
+    </form> 
+    <a href="?page=createAccount"><p>Pas de compte ? Créez en un ici</p></a>';
     }
     else{
         echo '<form method="POST">
@@ -60,7 +62,7 @@ try {
     
 
     if($results){
-        if ($password == $results[0]["password_user"]){
+        if (password_verify($password , $results[0]["password_user"])){
             $_SESSION['user'] = [
                 "id_user" => $results[0]["id_user"] ,
                 "nom_user" => $results[0]["nom_user"] ,
@@ -84,7 +86,42 @@ try {
             header("Location: index.php");
 
         }
-    ?>
 
+    if (isset($_GET['page']) && $_GET['page'] == 'createAccount'){
+        echo  '<form method="POST">
+        <input type="text" name="nomCreate" placeholder="Nom">
+        <br>
+        <input type="text" name="prenomCreate" placeholder="Prenom">
+        <br>
+        <input type="text" name="ageCreate" placeholder="age">
+        <br>
+        <input type="text" name="mailCreate" placeholder="mail">
+        <br>
+        <input type="text" name="passwordCreate" placeholder="mot de passe">
+        <br>
+        <input type="submit" name="submitCreate" value="Créer mon compte">
+        </form>';
+    }
+
+
+    if (isset($_POST['submitCreate'])){
+        $nomCreate = $_POST['nomCreate'];
+        $prenomCreate = $_POST['prenomCreate'];
+        $ageCreate = $_POST['ageCreate'];
+        $mailCreate = $_POST['mailCreate'];
+        $passwordCreate = $_POST['passwordCreate'];
+
+        $hashedPassword = password_hash($passwordCreate, PASSWORD_DEFAULT);
+
+        $sqlCreate = "INSERT INTO `user`(`nom_user`, `prenom_user`, `age_user`, `adresse_mail_user`, `password_user`) VALUES ('$nomCreate','$prenomCreate','$ageCreate','$mailCreate','$hashedPassword')";
+        $stmtCreate = $pdo->prepare($sqlCreate);
+        $stmtCreate->execute();
+
+        echo "date ajouet en BDD";
+
+    }
+    ?>
+   
+        
 </body>
 </html>
