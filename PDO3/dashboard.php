@@ -21,10 +21,10 @@ try {
 
 // Mise à jour des informations
 if (isset($_POST['modifier'])) {
-    $id = $_SESSION['user']['id_user'];
-    $nom = $_POST['nom'];
-    $prenom = $_POST['prenom'];
-    $age = $_POST['age'];
+    $id = htmlspecialchars($_SESSION['user']['id_user']);
+    $nom = htmlspecialchars($_POST['nom']);
+    $prenom = htmlspecialchars($_POST['prenom']);
+    $age = htmlspecialchars($_POST['age']);
 
     $sql = "UPDATE user SET nom_user = ?, prenom_user = ?, age_user = ? WHERE id_user = ?";
     $stmt = $pdo->prepare($sql);
@@ -49,19 +49,19 @@ if (isset($_POST['modifier'])) {
 
 <body>
     <h2>Panneau de configuration</h2>
-    <p>Bonjour, <?= $_SESSION['user']['prenom_user'] ?> <?= $_SESSION['user']['nom_user'] ?>.</p>
+    <p>Bonjour, <?= htmlspecialchars($_SESSION['user']['prenom_user']) ?> <?= htmlspecialchars($_SESSION['user']['nom_user']) ?>.</p>
 
     <?php if (isset($message)) echo "$message</p>"; ?>
 
     <form method="POST">
         <label>Nom :</label>
-        <input type="text" name="nom" value="<?php echo $_SESSION['user']['nom_user']; ?>" required><br><br>
+        <input type="text" name="nom" value="<?php echo htmlspecialchars($_SESSION['user']['nom_user']) ?>" required><br><br>
 
         <label>Prénom :</label>
-        <input type="text" name="prenom" value="<?php echo $_SESSION['user']['prenom_user']; ?>" required><br><br>
+        <input type="text" name="prenom" value="<?php echo htmlspecialchars($_SESSION['user']['prenom_user']) ?>" required><br><br>
 
         <label>Âge :</label>
-        <input type="number" name="age" value="<?php echo $_SESSION['user']['age_user']; ?>" required><br><br>
+        <input type="number" name="age" value="<?php echo htmlspecialchars($_SESSION['user']['age_user']) ?>" required><br><br>
 
         <input type="submit" name="modifier" value="Enregistrer les modifications">
     </form>

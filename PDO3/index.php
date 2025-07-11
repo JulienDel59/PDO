@@ -39,7 +39,7 @@ try {
         echo '<form method="POST">
         <input type="submit" name="deconnexion" value="Se déconnecter">
         </form>';
-        echo "Bonjour, " . $_SESSION['user']['nom_user'] . " " . $_SESSION['user']['prenom_user'] . " . Vous êtes connecté . ";
+        echo "Bonjour, " . htmlspecialchars($_SESSION['user']['nom_user']) . " " . htmlspecialchars($_SESSION['user']['prenom_user']) . " . Vous êtes connecté . ";
         // echo '<br><a href="dashboard.php">Accéder au panneau de configuration</a>';
         include 'dashboard.php';
     }
@@ -50,8 +50,8 @@ try {
     <?php
 
         if (isset($_POST['submitConnexion'])){
-            $mail = $_POST['identifiant'];
-            $password = $_POST['password'];
+            $mail = htmlspecialchars($_POST['identifiant']);
+            $password = htmlspecialchars($_POST['password']);
 
             $sql ="SELECT * FROM `user` WHERE adresse_mail_user = '$mail'";
             $stmt = $pdo->prepare($sql);
@@ -62,11 +62,11 @@ try {
     if($results){
         if ($password == $results[0]["password_user"]){
             $_SESSION['user'] = [
-                "id_user" => $results[0]["id_user"] ,
-                "nom_user" => $results[0]["nom_user"] ,
-                "prenom_user" => $results[0]["prenom_user"] ,
-                "age_user" => $results[0]["age_user"],
-                "adresse_mail_user" => $results[0]["adresse_mail_user"] ,
+                "id_user" => htmlspecialchars($results[0]["id_user"]) ,
+                "nom_user" => htmlspecialchars($results[0]["nom_user"]) ,
+                "prenom_user" => htmlspecialchars($results[0]["prenom_user"]) ,
+                "age_user" => htmlspecialchars($results[0]["age_user"]),
+                "adresse_mail_user" => htmlspecialchars($results[0]["adresse_mail_user"]) ,
             ];
                 header("Location: index.php");
         }
