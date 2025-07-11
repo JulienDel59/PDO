@@ -21,10 +21,10 @@ try {
 
 // Mise à jour des informations
 if (isset($_POST['modifier'])) {
-    $id = htmlspecialchars($_SESSION['user']['id_user']);
-    $nom = htmlspecialchars($_POST['nom']);
-    $prenom = htmlspecialchars($_POST['prenom']);
-    $age = htmlspecialchars($_POST['age']);
+    $id = $_SESSION['user']['id_user'];
+    $nom = $_POST['nom'];
+    $prenom = $_POST['prenom'];
+    $age = $_POST['age'];
 
     $sql = "UPDATE user SET nom_user = ?, prenom_user = ?, age_user = ? WHERE id_user = ?";
     $stmt = $pdo->prepare($sql);
