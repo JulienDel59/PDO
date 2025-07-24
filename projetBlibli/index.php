@@ -49,11 +49,11 @@ try {
     
         if (isset($_POST['submitLivre'])) {
          // Récupération des données du formulaire
-         $titre = $_POST['titre'];
-         $genreNom = $_POST['genre'];
+         $titre = trim($_POST['titre']);
+         $genreNom = trim($_POST['genre']);
          $annee = $_POST['annee'];
-         $nomAuteur = $_POST['nomAuteur'];
-         $prenomAuteur = $_POST['prenomAuteur'];
+         $nomAuteur = trim($_POST['nomAuteur']);
+         $prenomAuteur = trim($_POST['prenomAuteur']);
 
         try {
          $pdo->beginTransaction();
@@ -175,10 +175,87 @@ try {
     echo "</tr>";
 }
 
-    
     ?>
     </table>
 
+<h2>Gestion des genres</h2>
+
+<!-- Formulaire d'ajout -->
+<form method="POST">
+    <label>Nom du genre :</label>
+    <input type="text" name="nouveauGenre" required>
+    <input type="submit" name="ajouterGenre" value="Ajouter genre">
+</form>
+
+<br>
+
+<!-- Tableau des genres -->
+<table border="1" cellpadding="5">
+    <tr>
+        <th>ID</th>
+        <th>Nom du genre</th>
+        <th>Actions</th>
+    </tr>
+
+<?php
+// 1. Ajout d’un genre
+if (isset($_POST['ajouterGenre'])) {
+    $nomGenre = trim($_POST['nouveauGenre']);
+    if (!empty($nomGenre)) {
+        $stmt = $pdo->prepare("SELECT * FROM genres WHERE nomGenre = ?");
+        $stmt->execute([$nomGenre]);
+        if ($stmt->fetch()) {
+            $stmt = $pdo->prepare("INSERT INTO genres (nomGenre) VALUES (?)");
+            $stmt->execute([$nomGenre]);
+            echo "<p style='color: green;'>Genre ajouté avec succès.</p>";
+        } else {
+            echo "<p style='color: orange;'>Ce genre existe déjà.</p>";
+        }
+    }
+}
+
+// 2. Suppression d’un genre
+if (isset($_POST['supprimerGenre'])) {
+    $id_genre = $_POST['id_genre'];
+    try {
+        $stmt = $pdo->prepare("DELETE FROM genres WHERE id_genre = ?");
+        $stmt->execute([$id_genre]);
+        echo "<p style='color: green;'>Genre supprimé avec succès.</p>";
+    } catch (PDOException $e) {
+        echo "<p style='color: red;'>Erreur lors de la suppression : " . $e->getMessage() . "</p>";
+    }
+}
+
+// 3. Modification d’un genre
+if (isset($_POST['modifierGenre'])) {
+    $id_genre = $_POST['id_genre'];
+    $nomGenre = trim($_POST['nomGenre']);
+
+    if (!empty($nomGenre)) {
+        $stmt = $pdo->prepare("UPDATE genres SET nomGenre = ? WHERE id_genre = ?");
+        $stmt->execute([$nomGenre, $id_genre]);
+        echo "<p style='color: green;'>Genre modifié avec succès.</p>";
+    }
+}
+
+// 4. Affichage de tous les genres
+$stmt = $pdo->query("SELECT * FROM genres ORDER BY nomGenre");
+
+while ($genre = $stmt->fetch(PDO::FETCH_ASSOC)) {
+    echo "<tr>";
+    echo "<form method='POST'>";
+    echo "<td>" . $genre['id_genre'] . "</td>";
+    echo "<td><input type='text' name='nomGenre' value='" . htmlspecialchars($genre['nomGenre']) . "'></td>";
+    echo "<td>
+            <input type='hidden' name='id_genre' value='" . $genre['id_genre'] . "'>
+            <input type='submit' name='modifierGenre' value='Modifier'>
+            <input type='submit' name='supprimerGenre' value='Supprimer' onclick=\"return confirm('Supprimer ce genre ?');\">
+          </td>";
+    echo "</form>";
+    echo "</tr>";
+}
+?>
+</table>
 
    
 </body>
