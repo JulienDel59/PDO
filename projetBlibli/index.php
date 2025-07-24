@@ -111,26 +111,30 @@ try {
 
     <?php
 
-    if (isset($_POST['deleteLivre']) && isset($_POST['id_livre'])) {
+        if (isset($_POST['deleteLivre']) && isset($_POST['id_livre'])) {
         $id_livre = $_POST['id_livre'];
         try {
-            $pdo->beginTransaction();
+        $pdo->beginTransaction();
 
-            // Supprimer les relations
-            $pdo->prepare("DELETE FROM ecrir WHERE id_livres = ?")->execute([$id_livre]);
-            $pdo->prepare("DELETE FROM estDeGenre WHERE id_livres = ?")->execute([$id_livre]);
+        // Supprimer les relations
+        $stmt = $pdo->prepare("DELETE FROM ecrir WHERE id_livres = ?");
+        $stmt->execute([$id_livre]);
 
-            // Supprimer le livre
-            $pdo->prepare("DELETE FROM livres WHERE id_livres = ?")->execute([$id_livre]);
+        $stmt = $pdo->prepare("DELETE FROM estDeGenre WHERE id_livres = ?");
+        $stmt->execute([$id_livre]);
 
-            $pdo->commit();
-            echo "<p style='color: green;'> Livre supprimé avec succès !</p>";
-        } catch (PDOException $e) {
-            $pdo->rollBack();
-            echo "<p style='color: red;'> Erreur lors de la suppression : " . $e->getMessage() . "</p>";
-        }
+        // Supprimer le livre
+        $stmt = $pdo->prepare("DELETE FROM livres WHERE id_livres = ?");
+        $stmt->execute([$id_livre]);
+
+        $pdo->commit();
+        echo "<p style='color: green;'> Livre supprimé avec succès !</p>";
+    } catch (PDOException $e) {
+        $pdo->rollBack();
+        echo "<p style='color: red;'> Erreur lors de la suppression : " . $e->getMessage() . "</p>";
     }
-    
+    }
+
     ?>
 
     <h2>Liste des livres</h2>
@@ -192,7 +196,7 @@ try {
 <!-- Tableau des genres -->
 <table border="1" cellpadding="5">
     <tr>
-        <th>ID</th>
+       
         <th>Nom du genre</th>
         <th>Actions</th>
     </tr>
@@ -204,7 +208,7 @@ if (isset($_POST['ajouterGenre'])) {
     if (!empty($nomGenre)) {
         $stmt = $pdo->prepare("SELECT * FROM genres WHERE nomGenre = ?");
         $stmt->execute([$nomGenre]);
-        if ($stmt->fetch()) {
+        if (!$stmt->fetch()) {
             $stmt = $pdo->prepare("INSERT INTO genres (nomGenre) VALUES (?)");
             $stmt->execute([$nomGenre]);
             echo "<p style='color: green;'>Genre ajouté avec succès.</p>";
@@ -244,7 +248,6 @@ $stmt = $pdo->query("SELECT * FROM genres ORDER BY nomGenre");
 while ($genre = $stmt->fetch(PDO::FETCH_ASSOC)) {
     echo "<tr>";
     echo "<form method='POST'>";
-    echo "<td>" . $genre['id_genre'] . "</td>";
     echo "<td><input type='text' name='nomGenre' value='" . htmlspecialchars($genre['nomGenre']) . "'></td>";
     echo "<td>
             <input type='hidden' name='id_genre' value='" . $genre['id_genre'] . "'>
