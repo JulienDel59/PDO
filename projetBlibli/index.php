@@ -42,6 +42,8 @@ try {
         <br>
         <input type=submit name="submitLivre" value="Ajouter le livre">
     </form>
+    <br>
+    <br>
         
     <?php
     
@@ -106,6 +108,70 @@ try {
 }
 
     ?>
+
+    <?php
+
+    if (isset($_POST['deleteLivre']) && isset($_POST['id_livre'])) {
+        $id_livre = $_POST['id_livre'];
+        try {
+            $pdo->beginTransaction();
+
+            // Supprimer les relations
+            $pdo->prepare("DELETE FROM ecrir WHERE id_livres = ?")->execute([$id_livre]);
+            $pdo->prepare("DELETE FROM estDeGenre WHERE id_livres = ?")->execute([$id_livre]);
+
+            // Supprimer le livre
+            $pdo->prepare("DELETE FROM livres WHERE id_livres = ?")->execute([$id_livre]);
+
+            $pdo->commit();
+            echo "<p style='color: green;'> Livre supprimé avec succès !</p>";
+        } catch (PDOException $e) {
+            $pdo->rollBack();
+            echo "<p style='color: red;'> Erreur lors de la suppression : " . $e->getMessage() . "</p>";
+        }
+    }
+    
+    ?>
+
+    <h2>Liste des livres</h2>
+    <table border="1" cellpadding="5">
+    <tr>
+        <th>Titre</th>
+        <th>Année</th>
+        <th>Auteur</th>
+        <th>Genre</th>
+        <th>Action</th>
+    </tr>
+
+    <?php
+    $stmt = $pdo->query("
+        SELECT l.id_livres, l.titre, l.annee, 
+               e.nomAuteur, e.prenomAuteur, 
+               g.nomGenre
+        FROM livres l
+        LEFT JOIN ecrir ec ON l.id_livres = ec.id_livres
+        LEFT JOIN ecrivains e ON ec.id_ecrivains = e.id_ecrivains
+        LEFT JOIN estDeGenre edg ON l.id_livres = edg.id_livres
+        LEFT JOIN genres g ON edg.id_genre = g.id_genre
+        ORDER BY l.titre
+    ");
+
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        echo "<tr>";
+        echo "<td>" . htmlspecialchars($row['titre']) . "</td>";
+        echo "<td>" . htmlspecialchars($row['annee']) . "</td>";
+        echo "<td>" . htmlspecialchars($row['prenomAuteur']) . " " . htmlspecialchars($row['nomAuteur']) . "</td>";
+        echo "<td>" . htmlspecialchars($row['nomGenre']) . "</td>";
+        echo "<td>
+                <form method='POST' onsubmit='return confirm(\"Confirmer la suppression de ce livre ?\");'>
+                    <input type='hidden' name='id_livre' value='" . $row['id_livres'] . "'>
+                    <input type='submit' name='deleteLivre' value='Supprimer'>
+                </form>
+              </td>";
+        echo "</tr>";
+    }
+    ?>
+    </table>
 
 
    
