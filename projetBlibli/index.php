@@ -157,19 +157,25 @@ try {
     ");
 
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        echo "<tr>";
-        echo "<td>" . htmlspecialchars($row['titre']) . "</td>";
-        echo "<td>" . htmlspecialchars($row['annee']) . "</td>";
-        echo "<td>" . htmlspecialchars($row['prenomAuteur']) . " " . htmlspecialchars($row['nomAuteur']) . "</td>";
-        echo "<td>" . htmlspecialchars($row['nomGenre']) . "</td>";
-        echo "<td>
-                <form method='POST' onsubmit='return confirm(\"Confirmer la suppression de ce livre ?\");'>
-                    <input type='hidden' name='id_livre' value='" . $row['id_livres'] . "'>
-                    <input type='submit' name='deleteLivre' value='Supprimer'>
-                </form>
-              </td>";
-        echo "</tr>";
-    }
+    echo "<tr>";
+    echo "<td>" . htmlspecialchars($row['titre']) . "</td>";
+    echo "<td>" . htmlspecialchars($row['annee']) . "</td>";
+    echo "<td>" . htmlspecialchars($row['prenomAuteur']) . " " . htmlspecialchars($row['nomAuteur']) . "</td>";
+    echo "<td>" . htmlspecialchars($row['nomGenre']) . "</td>";
+    echo "<td>
+            <form method='POST' action='modifier_livre.php' style='display:inline;'>
+                <input type='hidden' name='id_livre' value='" . $row['id_livres'] . "'>
+                <input type='submit' name='editLivre' value='Modifier'>
+            </form>
+            <form method='POST' onsubmit='return confirm(\"Confirmer la suppression de ce livre ?\");' style='display:inline;'>
+                <input type='hidden' name='id_livre' value='" . $row['id_livres'] . "'>
+                <input type='submit' name='deleteLivre' value='Supprimer'>
+            </form>
+          </td>";
+    echo "</tr>";
+}
+
+    
     ?>
     </table>
 
