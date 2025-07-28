@@ -25,7 +25,7 @@ if (isset($_POST['login'])) {
 
     if ($user && password_verify($motdepasse, $user['password'])) {
         $_SESSION['email'] = $user['mailUtilisateur'];
-        header("Location: admin.php"); // redirige vers la page principale
+        header("Location: bibliotheque.php"); // redirige vers la page principale
         exit;
     } else {
         $erreur = "Email ou mot de passe incorrect.";
