@@ -263,6 +263,97 @@ while ($genre = $stmt->fetch(PDO::FETCH_ASSOC)) {
 ?>
 </table>
 
+<h2>Gestion des auteurs</h2>
+
+<!-- Formulaire d'ajout -->
+<form method="POST">
+    <label>Nom :</label>
+    <input type="text" name="nomAuteur" required>
+
+    <label>Prénom :</label>
+    <input type="text" name="prenomAuteur" required>
+
+    <input type="submit" name="ajouterAuteur" value="Ajouter auteur">
+</form>
+
+<br>
+
+<!-- Tableau des auteurs -->
+<table border="1" cellpadding="5">
+    <tr>
+        <th>Nom</th>
+        <th>Prénom</th>
+        <th>Actions</th>
+    </tr>
+
+<?php
+// 1. Ajout d’un auteur
+if (isset($_POST['ajouterAuteur'])) {
+    $nom = trim($_POST['nomAuteur']);
+    $prenom = trim($_POST['prenomAuteur']);
+
+    if (!empty($nom) && !empty($prenom)) {
+        $stmt = $pdo->prepare("SELECT * FROM ecrivains WHERE nomAuteur = ? AND prenomAuteur = ?");
+        $stmt->execute([$nom, $prenom]);
+        if (!$stmt->fetch()) {
+            $stmt = $pdo->prepare("INSERT INTO ecrivains (nomAuteur, prenomAuteur) VALUES (?, ?)");
+            $stmt->execute([$nom, $prenom]);
+            echo "<p style='color: green;'>Auteur ajouté avec succès.</p>";
+        } else {
+            echo "<p style='color: orange;'>Cet auteur existe déjà.</p>";
+        }
+    }
+}
+
+// 2. Suppression d’un auteur
+if (isset($_POST['supprimerAuteur'])) {
+    $id = $_POST['id_ecrivains'];
+    try {
+        // Supprimer d’abord les relations avec les livres
+        $stmt = $pdo->prepare("DELETE FROM ecrir WHERE id_ecrivains = ?");
+        $stmt->execute([$id]);
+
+        // Supprimer l’auteur
+        $stmt = $pdo->prepare("DELETE FROM ecrivains WHERE id_ecrivains = ?");
+        $stmt->execute([$id]);
+        echo "<p style='color: green;'>Auteur supprimé avec succès.</p>";
+    } catch (PDOException $e) {
+        echo "<p style='color: red;'>Erreur lors de la suppression : " . $e->getMessage() . "</p>";
+    }
+}
+
+// 3. Modification d’un auteur
+if (isset($_POST['modifierAuteur'])) {
+    $id = $_POST['id_ecrivains'];
+    $nom = trim($_POST['nomAuteur']);
+    $prenom = trim($_POST['prenomAuteur']);
+
+    if (!empty($nom) && !empty($prenom)) {
+        $stmt = $pdo->prepare("UPDATE ecrivains SET nomAuteur = ?, prenomAuteur = ? WHERE id_ecrivains = ?");
+        $stmt->execute([$nom, $prenom, $id]);
+        echo "<p style='color: green;'>Auteur modifié avec succès.</p>";
+    }
+}
+
+// 4. Affichage de tous les auteurs
+$stmt = $pdo->query("SELECT * FROM ecrivains ORDER BY nomAuteur");
+
+while ($auteur = $stmt->fetch(PDO::FETCH_ASSOC)) {
+    echo "<tr>";
+    echo "<form method='POST'>";
+    echo "<td><input type='text' name='nomAuteur' value='" . htmlspecialchars($auteur['nomAuteur']) . "' required></td>";
+    echo "<td><input type='text' name='prenomAuteur' value='" . htmlspecialchars($auteur['prenomAuteur']) . "' required></td>";
+    echo "<td>
+            <input type='hidden' name='id_ecrivains' value='" . $auteur['id_ecrivains'] . "'>
+            <input type='submit' name='modifierAuteur' value='Modifier'>
+            <input type='submit' name='supprimerAuteur' value='Supprimer' onclick=\"return confirm('Supprimer cet auteur ?');\">
+          </td>";
+    echo "</form>";
+    echo "</tr>";
+}
+?>
+</table>
+
    
 </body>
 </html>
