@@ -11,7 +11,7 @@ $pdo = new PDO("mysql:host=localhost;dbname=projetbibli;charset=utf8", 'root', '
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 // Récupération de l'utilisateur connecté
-$stmt = $pdo->prepare("SELECT id_utilisateur FROM utilisateur WHERE mailUtilisateur = ?");
+$stmt = $pdo->prepare("SELECT id_utilisateur, nomUtilisateur, prenomUtilisateur FROM utilisateur WHERE mailUtilisateur = ?");
 $stmt->execute([$_SESSION['email']]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 $id_utilisateur = $user['id_utilisateur'];
@@ -45,7 +45,7 @@ if (isset($_POST['emprunter']) && isset($_POST['id_livre'])) {
 </head>
 <body>
 
-    <h2>Bienvenue, <?= htmlspecialchars($_SESSION['email']) ?></h2>
+    <h2>Bienvenue, <?= htmlspecialchars($user['prenomUtilisateur']) . " " . htmlspecialchars($user['nomUtilisateur'])?></h2>
     <a href="logout.php">Se déconnecter</a><br><br>
 
     <?php if (!empty($message)) echo "<p style='color:green;'>$message</p>"; ?>
